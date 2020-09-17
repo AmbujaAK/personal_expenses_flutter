@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:personal_expenses_flutter/models/transaction.dart';
+import 'package:intl/intl.dart';
 
 void main() {
   runApp(MyApp());
@@ -20,6 +21,13 @@ class MyApp extends StatelessWidget {
       date: DateTime.now(),
     ),
   ];
+
+  // String titleInput;
+  // String amountinput;
+
+  final titleController = TextEditingController();
+  final amountController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -27,7 +35,7 @@ class MyApp extends StatelessWidget {
         appBar: AppBar(),
         body: Container(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Container(
@@ -38,6 +46,33 @@ class MyApp extends StatelessWidget {
                     'Chart',
                   ),
                   elevation: 5,
+                ),
+              ),
+              Card(
+                elevation: 5,
+                child: Container(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      TextField(
+                        decoration: InputDecoration(labelText: 'Title'),
+                        controller: titleController,
+                        // onChanged: (value)=>titleInput = value,
+                      ),
+                      TextField(
+                        decoration: InputDecoration(labelText: 'Amount'),
+                        controller: amountController,
+                        // onChanged: (val) => amountinput = val,
+                      ),
+                      FlatButton(
+                        onPressed: () {
+                          print(titleController.text);
+                        },
+                        child: Text('Add Transaction'),
+                        color: Colors.purple,
+                      ),
+                    ],
+                  ),
                 ),
               ),
               Container(
@@ -77,7 +112,7 @@ class MyApp extends StatelessWidget {
                                 ),
                               ),
                               Text(
-                                tx.date.toString(),
+                                DateFormat().format(tx.date),
                                 style: TextStyle(
                                   color: Colors.grey,
                                 ),
