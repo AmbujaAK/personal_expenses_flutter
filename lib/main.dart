@@ -53,18 +53,18 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final List<Transaction> _userTransaction = [
-    // Transaction(
-    //   id: 't1',
-    //   title: 'new shoes',
-    //   amount: 65.0,
-    //   date: DateTime.now(),
-    // ),
-    // Transaction(
-    //   id: 't2',
-    //   title: 'new shirt',
-    //   amount: 55.0,
-    //   date: DateTime.now(),
-    // ),
+    Transaction(
+      id: 't1',
+      title: 'new shoes',
+      amount: 65.0,
+      date: DateTime.now(),
+    ),
+    Transaction(
+      id: 't2',
+      title: 'new shirt',
+      amount: 55.0,
+      date: DateTime.now(),
+    ),
   ];
 
   bool _showChart = false;
@@ -92,12 +92,6 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  void _deleteTransaction(String id) {
-    setState(() {
-      _userTransaction.removeWhere((tx) => tx.id == id);
-    });
-  }
-
   void _startAddNewtransaction(BuildContext ctx) {
     showModalBottomSheet(
       context: ctx,
@@ -111,23 +105,30 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  void _deleteTransaction(String id) {
+    setState(() {
+      _userTransaction.removeWhere((tx) => tx.id == id);
+    });
+  }
+
+  final appBar = AppBar(title: Text('Personal Expenses'));
+
   @override
   Widget build(BuildContext context) {
-    final appBar = AppBar(title: Text('Personal Expenses'));
     final isLandscape =
         MediaQuery.of(context).orientation == Orientation.landscape;
 
+    // final height = MediaQuery.of(context).size.height -
+    //     MediaQuery.of(context).padding.top -
+    //     appBar.preferredSize.height;
+
     final txListWidget = Container(
       height: (MediaQuery.of(context).size.height -
-              appBar.preferredSize.height -
-              MediaQuery.of(context).padding.top) *
+              MediaQuery.of(context).padding.top -
+              appBar.preferredSize.height) *
           0.7,
       child: TransactionList(_userTransaction, _deleteTransaction),
     );
-
-    double height = MediaQuery.of(context).size.height -
-        MediaQuery.of(context).padding.top -
-        appBar.preferredSize.height;
 
     return Scaffold(
       appBar: appBar,
@@ -154,8 +155,8 @@ class _MyHomePageState extends State<MyHomePage> {
             if (!isLandscape)
               Container(
                 height: (MediaQuery.of(context).size.height -
-                        appBar.preferredSize.height -
-                        MediaQuery.of(context).padding.top) *
+                        MediaQuery.of(context).padding.top -
+                        appBar.preferredSize.height) *
                     0.3,
                 child: Charts(_recentTransactions),
               ),
@@ -165,8 +166,8 @@ class _MyHomePageState extends State<MyHomePage> {
               _showChart
                   ? Container(
                       height: (MediaQuery.of(context).size.height -
-                              appBar.preferredSize.height -
-                              MediaQuery.of(context).padding.top) *
+                              MediaQuery.of(context).padding.top -
+                              appBar.preferredSize.height) *
                           0.7,
                       child: Charts(_recentTransactions),
                     )
