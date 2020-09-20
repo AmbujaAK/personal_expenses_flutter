@@ -1,8 +1,14 @@
+// import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../widgets/adaptive_flat_button.dart';
+
 class NewTransaction extends StatefulWidget {
   final Function addTx;
+
   NewTransaction(this.addTx);
 
   @override
@@ -10,17 +16,26 @@ class NewTransaction extends StatefulWidget {
 }
 
 class _NewTransactionState extends State<NewTransaction> {
-  final titleController = TextEditingController();
-  final amountController = TextEditingController();
+  final _titleController = TextEditingController();
+  final _amountController = TextEditingController();
   DateTime _selectedDate;
 
   void _submitData() {
-    final newtitle = titleController.text;
-    final newAmount = double.parse(amountController.text);
+    if (_amountController.text.isEmpty) {
+      return;
+    }
+    final enteredTitle = _titleController.text;
+    final enteredAmount = double.parse(_amountController.text);
 
-    if (newtitle.isEmpty || newAmount <= 0 || _selectedDate == null) return;
+    if (enteredTitle.isEmpty || enteredAmount <= 0 || _selectedDate == null) {
+      return;
+    }
 
-    widget.addTx(newtitle, newAmount, _selectedDate);
+    widget.addTx(
+      enteredTitle,
+      enteredAmount,
+      _selectedDate,
+    );
 
     Navigator.of(context).pop();
   }
@@ -32,12 +47,14 @@ class _NewTransactionState extends State<NewTransaction> {
       firstDate: DateTime(2019),
       lastDate: DateTime.now(),
     ).then((pickedDate) {
-      if (pickedDate == null) return;
-
+      if (pickedDate == null) {
+        return;
+      }
       setState(() {
         _selectedDate = pickedDate;
       });
     });
+    print('...');
   }
 
   @override
@@ -54,42 +71,42 @@ class _NewTransactionState extends State<NewTransaction> {
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
+            children: <Widget>[
               TextField(
                 decoration: InputDecoration(labelText: 'Title'),
-                controller: titleController,
-                onChanged: (_) => _submitData(),
+                controller: _titleController,
+                onSubmitted: (_) => _submitData(),
+                // onChanged: (val) {
+                //   titleInput = val;
+                // },
               ),
               TextField(
                 decoration: InputDecoration(labelText: 'Amount'),
-                controller: amountController,
+                controller: _amountController,
                 keyboardType: TextInputType.number,
-                onChanged: (_) => _submitData(),
+                onSubmitted: (_) => _submitData(),
+                // onChanged: (val) => amountInput = val,
               ),
               Container(
                 height: 70,
                 child: Row(
-                  children: [
+                  children: <Widget>[
                     Expanded(
                       child: Text(
                         _selectedDate == null
-                            ? 'No date chooses'
-                            : 'Picked Date ${DateFormat.yMd().format(_selectedDate)}',
+                            ? 'No Date Chosen!'
+                            : 'Picked Date: ${DateFormat.yMd().format(_selectedDate)}',
                       ),
                     ),
-                    FlatButton(
-                      onPressed: _presentDatePicker,
-                      child: Text('Choose Date'),
-                      textColor: Theme.of(context).primaryColor,
-                    ),
+                    AdaptiveFlatButton('Choose Date', _presentDatePicker)
                   ],
                 ),
               ),
               RaisedButton(
-                onPressed: _submitData,
                 child: Text('Add Transaction'),
                 color: Theme.of(context).primaryColor,
                 textColor: Theme.of(context).textTheme.button.color,
+                onPressed: _submitData,
               ),
             ],
           ),
